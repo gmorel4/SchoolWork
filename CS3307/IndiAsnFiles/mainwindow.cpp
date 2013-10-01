@@ -33,7 +33,6 @@ void MainWindow::replyFinished(QNetworkReply * reply){
     ui->tempLabel->setText(display);
 }
 
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
