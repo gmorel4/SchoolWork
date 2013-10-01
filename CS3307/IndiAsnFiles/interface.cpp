@@ -3,20 +3,27 @@
 
 #include <QPushButton>
 
-Interface::Interface(QWidget *parent = 0) :
+Interface::Interface(QWidget *parent) :
     QMainWindow(parent),
     _ui(new Ui::MainWindow)
 {
     _ui->setupUi(this);
     _controller = new Controller();
-    _weather = new QPushButton (this);
-    weather = _ui->getWeather;
-    connect (weather, SIGNAL(released()), this, slot(getWeather()));
+    _weather = _ui->getWeather;
+    connect (_weather, SIGNAL(released()), this, SLOT(getWeather()));
 }
 
 void Interface::getWeather()
 {
     _controller->getWeather();
-    QString display(QString::number(_contoller->temperature, 'f', 1) + "degrees");
+    double temp = _controller->temperature();
+    QString display(QString::number(temp, 'f', 1) + "degrees");
     _ui->tempLabel->setText(display);
+}
+
+Interface::~Interface()
+{
+    delete _controller;
+    delete _weather;
+    delete _ui;
 }

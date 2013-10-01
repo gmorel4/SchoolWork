@@ -1,7 +1,7 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-#include "Data.cpp"
+#include "data.h"
 
 #include <QString>
 
