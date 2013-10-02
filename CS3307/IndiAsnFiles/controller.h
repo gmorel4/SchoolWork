@@ -2,29 +2,43 @@
 #define CONTROLLER_H
 
 #include "data.h"
-#include "interface.h"
+
 
 #include <QString>
+#include <QMainWindow>
+#include <QPushButton>
+#include <QComboBox>
 
-class Controller
+namespace Ui{
+class MainWindow;
+}
+
+class Controller : public QMainWindow
 {
+    Q_OBJECT
+
 public:
-    Controller(Interface* inter);
-    void changeUnits(QString units);
-    void changeCity(QString location);
-    double& temperature();
-    QString& city();
+    explicit Controller(QWidget *parent = 0);
+    //double& temperature();
+/*  QString& city();
     QString& units();
-    QString& currentConditions();
-    void getWeather();
+    QString& currentConditions();*/
     void updateDisplay (double temp);
     void networkError();
     ~Controller();
 
+public slots:
+    void getWeather();
+    void changeLocation ();
+    void changeUnits ();
+
 
 private:
+    QPushButton *_weather;
+    //QComboBox *_location;
+    //QComboBox *_units;
+    Ui::MainWindow *_ui;
     Data *_data;
-    Interface *_interface;
 
 
 };

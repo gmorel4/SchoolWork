@@ -1,13 +1,13 @@
 #ifndef DATA_H
 #define DATA_H
 
-#include "controller.h"
 
 #include <QString>
 #include <QtNetwork/QNetworkReply>
 #include <QUrl>
 #include <QUrlQuery>
 
+class Controller;
 class Data : public QObject
 {
     Q_OBJECT
