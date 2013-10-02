@@ -13,6 +13,8 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QDebug>
 
+
+
 Data::Data(QString location, QString units, Controller *control)
 {
 
@@ -21,16 +23,9 @@ Data::Data(QString location, QString units, Controller *control)
     _controller = control;
 
     //creating a QUrl object from the string, specifies the weather server
-    _url = QUrl ("http://openweathermap.org/data/2.5/weather");
 
-    //creating a QUrlQuery
-    _query = QUrlQuery (_url);
-
-    //adding items to the QUrlQuery with our CS3307 APPID
-    _query.addQueryItem("APPID","291cc02999b830ce1d7bf176d3d49172");
 
     //creating a new QNetworkAccessManager to manage network requests and replies
-    _manager = new QNetworkAccessManager(this);
 }
 
 //returns the temperture
@@ -72,22 +67,32 @@ QString& Data::units()
 //envoked by the controller when the user wants to update the weather
 void Data::sendQuery()
 {
-    //create a network request from the url
-    QNetworkRequest request(_url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+
+    QUrl url = QUrl ("http://openweathermap.org/data/2.5/weather");
+
+
 
     //add items to the url query for the location and the desired units
-    _query.addQueryItem("q", _location);
-    _query.addQueryItem("units", _units);
+    QUrlQuery query (url);
+    query.addQueryItem("APPID","291cc02999b830ce1d7bf176d3d49172");
+    query.addQueryItem("q", _location);
+    query.addQueryItem("units", _units);
+
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
     //set the query to the url
-    _url.setQuery(_query);
+    url.setQuery(query);
 
     //set the url to the request
-    request.setUrl(_url);
+    request.setUrl(url);
+
+    std::cout<<url.toString().toStdString()<<std::endl;
 
     //tell the network manager to post the url request
-    _manager->post(request, _url.toEncoded());
+    manager->post(request, url.toEncoded());
 }
 
 //called when a network reply has been received
@@ -115,12 +120,6 @@ void Data::replyFinished(QNetworkReply *reply)
 
     //tell the controller to update the UI with the new weather information
     _controller->updateDisplay(_temp);
-}
-
-Data::~Data()
-{
-    delete _manager;
-    delete _controller;
 }
 
 

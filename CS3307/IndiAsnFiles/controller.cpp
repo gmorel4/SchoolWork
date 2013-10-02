@@ -12,6 +12,8 @@ Controller::Controller(QWidget *parent) :
     QMainWindow(parent),
     _ui(new Ui::MainWindow)
 {
+
+    _ui->setupUi(this);
     //set the default location to London, Canada
     QString location = "London,can";
 
@@ -27,8 +29,8 @@ Controller::Controller(QWidget *parent) :
     //_units = _ui->unitBox;
 
     connect (_weather, SIGNAL(released()), this, SLOT(getWeather()));
-    //connect (_location, SIGNAL(currentIndexChanged(QString)), this, SLOT(changeLocation()));
-    //connect (_units, SIGNAL(currentIndexChanged(QString)), this, SLOT(changeUnits()));
+    connect (_location, SIGNAL(currentIndexChanged(QString)), this, SLOT(changeLocation()));
+    connect (_units, SIGNAL(currentIndexChanged(QString)), this, SLOT(changeUnits()));
 
 }
 

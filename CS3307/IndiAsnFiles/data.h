@@ -1,11 +1,8 @@
 #ifndef DATA_H
 #define DATA_H
 
-
 #include <QString>
 #include <QtNetwork/QNetworkReply>
-#include <QUrl>
-#include <QUrlQuery>
 
 class Controller;
 class Data : public QObject
@@ -22,10 +19,10 @@ public:
     QString& units();
     bool netError();
     void sendQuery();
-    ~Data();
+   // ~Data();
 
 public slots:
-    void replyFinished(QNetworkReply *reply);
+    void replyFinished(QNetworkReply * reply);
 
 private:
     Controller *_controller;
@@ -33,8 +30,6 @@ private:
     QString _units;
     double _temp;
     QString _conditions;
-    QUrl _url;
-    QUrlQuery _query;
     QNetworkAccessManager *_manager;
     bool _networkError;
 

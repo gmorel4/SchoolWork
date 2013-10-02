@@ -35,8 +35,8 @@ public slots:
 
 private:
     QPushButton *_weather;
-    //QComboBox *_location;
-    //QComboBox *_units;
+    QComboBox *_location;
+    QComboBox *_units;
     Ui::MainWindow *_ui;
     Data *_data;
 
