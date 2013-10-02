@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>110</y>
+      <y>170</y>
       <width>321</width>
       <height>71</height>
      </rect>
@@ -33,14 +33,14 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>60</y>
+      <x>0</x>
+      <y>30</y>
       <width>141</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>London ON Weather</string>
+     <string>Choose Location:</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -49,7 +49,7 @@
    <widget class="QPushButton" name="getWeather">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>140</x>
       <y>250</y>
       <width>114</width>
       <height>32</height>
@@ -57,6 +57,95 @@
     </property>
     <property name="text">
      <string>Get Weather</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="locationBox">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>30</y>
+      <width>111</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>London, ON, Canada</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Boston, MA, USA</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Toronto, ON, Canada</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Seattle, WA, USA</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Parry Sound, ON, Canada</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QComboBox" name="unitBox">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>70</y>
+      <width>111</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>Metric</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Imperial</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Internal</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>70</y>
+      <width>111</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Choose Units:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="conditionLabel">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>100</y>
+      <width>321</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>

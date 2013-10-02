@@ -2,13 +2,14 @@
 #define CONTROLLER_H
 
 #include "data.h"
+#include "interface.h"
 
 #include <QString>
 
 class Controller
 {
 public:
-    Controller();
+    Controller(Interface* inter);
     void changeUnits(QString units);
     void changeCity(QString location);
     double& temperature();
@@ -16,11 +17,14 @@ public:
     QString& units();
     QString& currentConditions();
     void getWeather();
+    void updateDisplay (double temp);
+    void networkError();
     ~Controller();
 
 
 private:
     Data *_data;
+    Interface *_interface;
 
 
 };
