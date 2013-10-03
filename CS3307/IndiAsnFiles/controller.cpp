@@ -49,35 +49,24 @@ void Controller::changeLocation()
     _data->changeLocation(_ui->locationBox->currentText());
 }
 
-//returns the current temperature
-//double& Controller::temperature ()
-//{
-//    return (_data->temperature());
-//}
-
-//returns the current location
-//QString& Controller::city()
-//{
-//    return (_data->location());
-//}
-
-//returns the current units
-//QString& Controller::units()
-//{
-//    return (_data->units());
-//}
-
-//returns the current weather conditions
-//QString& Controller::currentConditions()
-//{
-//    return (_data->currentConditions());
-//}
-
 //called when the user presses the 'Get Weather' button (invoked by Interface class)
 void Controller::getWeather()
 {
     //tell the Data class to send the URL query
     _data->sendQuery();
+    _ui->conditionsLabel->clear();
+    _ui->degreeLabel->clear();
+    _ui->degreeLabel_2->clear();
+    _ui->hiloLabel->clear();
+    _ui->humidityLabel->clear();
+    _ui->locationLabel->clear();
+    _ui->pressureLabel->clear();
+    _ui->smUnitLabel->clear();
+    _ui->sunriseLabel->clear();
+    _ui->sunsetLabel->clear();
+    _ui->tempLabel->clear();
+    _ui->unitLabel->clear();
+    _ui->windLabel->clear();
     _ui->locationLabel->setText("Getting weather.....");
 }
 
