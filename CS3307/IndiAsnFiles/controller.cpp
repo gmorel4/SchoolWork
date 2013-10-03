@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QComboBox>
 #include <QDateTime>
+#include <QPixmap>
 
 Controller::Controller(QWidget *parent) :
     QMainWindow(parent),
@@ -24,11 +25,23 @@ Controller::Controller(QWidget *parent) :
     //create a Data object using this Controller, and the default values for location and units
     _data = new Data (location, units, this);
 
+    //creating a pixmap to have a starting image
+    QPixmap pix (":/images/images/weather.png");
+
+    //align the label holding the start-up image to the centre
+    _ui->weatherImage->setAlignment(Qt::AlignCenter);
+
+    //set the start-up image
+    _ui->weatherImage->setPixmap(pix);
+
+    //set the push button
     _weather = _ui->getWeather;
 
+    //set the selection boxes
     _location = _ui->locationBox;
     _units = _ui->unitBox;
 
+    //connect the widget signals to the specified slots
     connect (_weather, SIGNAL(released()), this, SLOT(getWeather()));
     connect (_location, SIGNAL(currentIndexChanged(QString)), this, SLOT(changeLocation()));
     connect (_units, SIGNAL(currentIndexChanged(QString)), this, SLOT(changeUnits()));
@@ -54,6 +67,9 @@ void Controller::getWeather()
 {
     //tell the Data class to send the URL query
     _data->sendQuery();
+
+    //clear all of the weather labels and start-up image (only there on first call)
+    _ui->weatherImage->clear();
     _ui->conditionsLabel->clear();
     _ui->degreeLabel->clear();
     _ui->degreeLabel_2->clear();
@@ -67,6 +83,8 @@ void Controller::getWeather()
     _ui->tempLabel->clear();
     _ui->unitLabel->clear();
     _ui->windLabel->clear();
+
+    //display message to user
     _ui->locationLabel->setText("Getting weather.....");
 }
 
@@ -76,11 +94,12 @@ void Controller::updateMain(QString& location, double& temp, QString& units)
     //create a new QString to be displayed from the double that was received as a parameter
     QString display(QString::number(temp, 'f', 1));
 
-    //display the QString on the UI in the associated text box
+    //display the location, temperature in the current units
     _ui->locationLabel->setText(location);
     _ui->tempLabel->setText(display);
     _ui->degreeLabel->setText("o");
 
+    //set the units label to be the correct letter abbreviation for the desired units
     if (units == "Imperial")
         _ui->unitLabel->setText("F");
     else if (units == "Metric")
@@ -89,25 +108,45 @@ void Controller::updateMain(QString& location, double& temp, QString& units)
         _ui->unitLabel->setText("K");
 }
 
+//updates the current conditions description
 void Controller::updateConditions(QString &conditions)
 {
+    //allign the label holding the conditions description to be in the centre
     _ui->conditionsLabel->setAlignment(Qt::AlignCenter);
+
+    //display the conditions
     _ui->conditionsLabel->setText(conditions);
 }
 
+//update other weather conditions (min and max temps, humidity, pressure, sunrise, sunset, windspeed and direction)
 void Controller::updateDescription(double &min, double &max, double &humidity, double &pressure, uint &sunrise, uint &sunset, double &windspeed, double &winddirection)
 {
+    //convert the unix time of the sunrise and sunset to a QDateTime object
     QDateTime sunrDT = QDateTime::fromTime_t(sunrise);
     QDateTime sunsDT = QDateTime::fromTime_t(sunset);
+
+    //make a QString to display the sunrise and sunset times with the desired format
     QString sunr ("Sunrise: " + sunrDT.toString("hh:mm:ss ap"));
     QString suns ("Sunset: " + sunsDT.toString("hh:mm:ss ap"));
+
+    //get the current requested units
     QString units = _data->units();
+
+    //make a QString the for Hi/Lo temperature
     QString HiLo ("Hi/Lo: " + QString::number(max,'f',1) + "/" + QString::number(min,'f',1));
+
     QString tempUnits;
+
+    //make a QString for the humidity
     QString humid ("Humidity: " + QString::number(humidity,'f',1) + "%");
+
+    //make a QString for the pressure (not sure what units were used, assumed Pascals?)
     QString press ("Pressure: " + QString::number(pressure, 'f',1) + " Pa");
+
+
     QString direction;
 
+    //a really long if/else if chain to determine the direction of the wind, based on the given degrees
     if ((winddirection >= 0 && winddirection <= 11.25) || (winddirection > 348.75 && winddirection <= 360))
         direction = "N";
     else if (winddirection > 11.25 && winddirection <= 33.75)
@@ -141,6 +180,7 @@ void Controller::updateDescription(double &min, double &max, double &humidity, d
     else if (winddirection > 326.25 && winddirection <= 348.75)
         direction = "NNW";
 
+    //get the correct abbreviation for windspeed and temperature based on the desired units
     QString windUnits;
     if (units == "Imperial")
     {
@@ -158,8 +198,10 @@ void Controller::updateDescription(double &min, double &max, double &humidity, d
         tempUnits = "K";
     }
 
+    //create a QString for the wind
     QString wind ("Wind: " + QString::number(windspeed, 'f', 1) + " " + windUnits + " " + direction);
 
+    //display all of the created QStrings for the detailed weather information
     _ui->hiloLabel->setText(HiLo);
     _ui->degreeLabel_2->setText("o");
     _ui->smUnitLabel->setText(tempUnits);
@@ -173,6 +215,7 @@ void Controller::updateDescription(double &min, double &max, double &humidity, d
 //called when there is a network error
 void Controller::networkError()
 {
+    //display to the user that there was an error when a reply was received
     QString display("Network Error!");
     _ui->tempLabel->setText(display);
 }

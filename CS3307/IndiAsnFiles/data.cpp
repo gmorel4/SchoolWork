@@ -67,6 +67,7 @@ void Data::sendQuery()
     query.addQueryItem("q", _location);
     query.addQueryItem("units", _units);
 
+    //create a URL request, and set the request header
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
@@ -76,10 +77,11 @@ void Data::sendQuery()
     //set the url to the request
     request.setUrl(url);
 
-    std::cout<<url.toString().toStdString()<<std::endl;
+   // std::cout<<url.toString().toStdString()<<std::endl;
 
     //tell the network manager to post the url request
     _manager->post(request, url.toEncoded());
+
 }
 
 //called when a network reply has been received
@@ -100,25 +102,36 @@ void Data::replyFinished(QNetworkReply *reply)
     QJsonObject wind = obj["wind"].toObject();
     QJsonArray weather = obj["weather"].toArray();
 
-    //parse out the temperature from the 'main' Json object
     double temp;
     double min;
     double max;
     double humidity;
     double pressure;
+
+    //parse out the temperature from the 'main' Json object
     temp = main["temp"].toDouble();
+
+    //parse out the minimum temperature from the 'main' Json object
     min = main["temp_min"].toDouble();
+
+    //parse out the maximum temperature from the 'main' Json object
     max = main["temp_max"].toDouble();
+
+    //parse out the humidity from the 'main' Json object
     humidity = main["humidity"].toDouble();
+
+    //parse out the pressure from the 'main' Json object
     pressure = main["pressure"].toDouble();
 
-    //parse out the current conditions from the 'weather' Json object
+    //parse out the current conditions from the 'weather' Json array
     QString conditions;
     conditions = ((weather.first()).toObject())["description"].toString();
 
+    //get the unix time for the sunrise and sunset (as an unsigned int) from the 'sys' Json object
     uint sunrise = (uint) sys["sunrise"].toDouble();
     uint sunset = (uint) sys["sunset"].toDouble();
 
+    //get the windspeed and direction from the 'wind' Json object
     double windspeed = wind["speed"].toDouble();
     double winddirection = wind["deg"].toDouble();
 

@@ -13,12 +13,17 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
     data.cpp \
     controller.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS  += \
     data.h \
     controller.h
 
 FORMS    += mainwindow.ui
+
+OTHER_FILES += \
+    images/bright_sun_T.png
+
+RESOURCES += \
+    resources.qrc
