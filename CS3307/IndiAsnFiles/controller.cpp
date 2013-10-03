@@ -102,7 +102,7 @@ void Controller::updateMain(QString& location, double& temp, QString& units)
 
 void Controller::updateConditions(QString &conditions)
 {
-    //_ui->conditionsLabel->setAlignment(Qt::AlignCenter);
+    _ui->conditionsLabel->setAlignment(Qt::AlignCenter);
     _ui->conditionsLabel->setText(conditions);
 }
 

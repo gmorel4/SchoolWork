@@ -12,6 +12,7 @@
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkRequest>
 #include <QDebug>
+#include <QJsonArray>
 
 
 
@@ -97,7 +98,7 @@ void Data::replyFinished(QNetworkReply *reply)
     QJsonObject main = obj["main"].toObject();
     QJsonObject sys = obj["sys"].toObject();
     QJsonObject wind = obj["wind"].toObject();
-    QJsonObject weather = sys["weather"].toObject();
+    QJsonArray weather = obj["weather"].toArray();
 
     //parse out the temperature from the 'main' Json object
     double temp;
@@ -113,7 +114,7 @@ void Data::replyFinished(QNetworkReply *reply)
 
     //parse out the current conditions from the 'weather' Json object
     QString conditions;
-    conditions = obj["description"].toString();
+    conditions = ((weather.first()).toObject())["description"].toString();
 
     uint sunrise = (uint) sys["sunrise"].toDouble();
     uint sunset = (uint) sys["sunset"].toDouble();
