@@ -19,7 +19,7 @@ public:
     QString& units();
     bool netError();
     void sendQuery();
-   // ~Data();
+    ~Data();
 
 public slots:
     void replyFinished(QNetworkReply * reply);
@@ -28,8 +28,6 @@ private:
     Controller *_controller;
     QString _location;
     QString _units;
-    double _temp;
-    QString _conditions;
     QNetworkAccessManager *_manager;
     bool _networkError;
 

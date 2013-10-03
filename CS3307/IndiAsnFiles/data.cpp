@@ -26,12 +26,8 @@ Data::Data(QString location, QString units, Controller *control)
 
 
     //creating a new QNetworkAccessManager to manage network requests and replies
-}
-
-//returns the temperture
-double& Data::temperature()
-{
-    return _temp;
+    _manager = new QNetworkAccessManager (this);
+    connect (_manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
 }
 
 //changes the location for the weather to be retrieved
@@ -52,12 +48,6 @@ QString& Data::location()
     return _location;
 }
 
-//return the current weather conditions
-QString& Data::currentConditions()
-{
-    return _conditions;
-}
-
 //return the units being used
 QString& Data::units()
 {
@@ -68,11 +58,7 @@ QString& Data::units()
 void Data::sendQuery()
 {
 
-    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-
     QUrl url = QUrl ("http://openweathermap.org/data/2.5/weather");
-
-
 
     //add items to the url query for the location and the desired units
     QUrlQuery query (url);
@@ -92,13 +78,12 @@ void Data::sendQuery()
     std::cout<<url.toString().toStdString()<<std::endl;
 
     //tell the network manager to post the url request
-    manager->post(request, url.toEncoded());
+    _manager->post(request, url.toEncoded());
 }
 
 //called when a network reply has been received
 void Data::replyFinished(QNetworkReply *reply)
 {
-
    //if there was an error received, tell the controller to display that there was an error
     if (reply->error() != QNetworkReply::NoError){
         _controller->networkError();
@@ -110,16 +95,40 @@ void Data::replyFinished(QNetworkReply *reply)
 
     //parse out various objects from the Json
     QJsonObject main = obj["main"].toObject();
-    QJsonObject weather = obj["weather"].toObject();
+    QJsonObject sys = obj["sys"].toObject();
+    QJsonObject wind = obj["wind"].toObject();
+    QJsonObject weather = sys["weather"].toObject();
 
     //parse out the temperature from the 'main' Json object
-    _temp = main["temp"].toDouble();
+    double temp;
+    double min;
+    double max;
+    double humidity;
+    double pressure;
+    temp = main["temp"].toDouble();
+    min = main["temp_min"].toDouble();
+    max = main["temp_max"].toDouble();
+    humidity = main["humidity"].toDouble();
+    pressure = main["pressure"].toDouble();
 
     //parse out the current conditions from the 'weather' Json object
-    _conditions = weather["description"].toString();
+    QString conditions;
+    conditions = obj["description"].toString();
+
+    uint sunrise = (uint) sys["sunrise"].toDouble();
+    uint sunset = (uint) sys["sunset"].toDouble();
+
+    double windspeed = wind["speed"].toDouble();
+    double winddirection = wind["deg"].toDouble();
 
     //tell the controller to update the UI with the new weather information
-    _controller->updateDisplay(_temp);
+    _controller->updateMain(_location, temp, _units);
+    _controller->updateConditions(conditions);
+    _controller->updateDescription (min,max,humidity,pressure,sunrise,sunset,windspeed,winddirection);
 }
 
+Data::~Data()
+{
+    delete _manager;
+}
 

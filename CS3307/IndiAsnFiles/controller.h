@@ -23,8 +23,10 @@ public:
 /*  QString& city();
     QString& units();
     QString& currentConditions();*/
-    void updateDisplay (double temp);
     void networkError();
+    void updateMain (QString& location, double& temp, QString& units);
+    void updateConditions (QString& conditions);
+    void updateDescription (double& min, double& max, double& humidity, double& pressure, uint& sunrise, uint& sunset, double& windspeed, double&winddirection);
     ~Controller();
 
 public slots:
