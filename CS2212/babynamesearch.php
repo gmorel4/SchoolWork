@@ -16,21 +16,19 @@
 
        //$javaclass = new Java("friendSearch");
 
+       echo ("<applet code=FriendSearch.class width=1000, height=2000>");
        try {$uid = $facebook->getUser();
               //print $uid; //this is the unique number that identifies a facebook user
               $user_profile = $facebook->api('/me','GET');
-              <param name = "userName"
-                value = $user_profile.['name'] />
               //echo "<br>First Name: " . $user_profile['first_name'];
               $profilepic= "https://graph.facebook.com/" . $user_profile['id'] ."/picture?type=large";
               //echo "<p>URL Location of my facebook profile picture: " ;
               //echo $profilepic; 
               $headers = get_headers ($profilepic, 1);
               $url = $headers['Location'];
+              echo($user_profile.','.$url.'\n');
               //echo "<p>URL location of my facebook profile picture if I need to get at the .jpg file:";
               //echo $url;
-              <param name = "userPicLocation"
-                value = $url />
               //echo "<img src=\" $profilepic \"/>";
               //echo "<p>";
               $friends = $facebook->api('/me/friends',array('fields' => 'id,first_name')); 
@@ -39,7 +37,6 @@
               //file_put_contents($friendList, " ");
               //<param name = "fileName"
               //value = $file />
-              echo ("<applet code=FriendSearch.class width=1000, height=2000>");
               $getList = $_POST["getList"];
               if ($getList == "true"){
                 foreach ($friends["data"] as $value) {

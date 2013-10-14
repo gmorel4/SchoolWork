@@ -27,48 +27,41 @@ public class FriendSearch extends JApplet{
 	
 	public void init()
 	{
-		final String userName = getParameter ("userName");
-		URL userPicLocation = null;
-		try {
-			userPicLocation = new URL (getParameter("userPicLocation"));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if (userPicLocation != null)
-			user = new User (userName, userPicLocation);
-		else
-			user = new User (userName);
-		
-		friendList = new LinkedList<Friend> ();
-		ui = new GUI();
-		this.add(ui.getOuterPanel());
 		try{
 			url = new URL (getCodeBase() + "/babynamesearch.php");
 			uc = url.openConnection();
 			uc.setDoOutput(true);
-		}catch (Exception e){
+			OutputStreamWriter out = new OutputStreamWriter(uc.getOutputStream());
+			BufferedReader in = new BufferedReader (new InputStreamReader(uc.getInputStream()));
+			String sendUser = URLEncoder.encode("sendUser", "UTF-8") + "=" + URLEncoder.encode("true" , "URF-8");
+			out.write(sendUser);
+			out.flush();
+			String userInfo = in.readLine();
+			String[] info = userInfo.split(",");
 			
-		}
+			if (info[1] != null)
+				user = new User (info[0], new URL (info[1]));
+			else
+				user = new User (info[0]);
+		
+			friendList = new LinkedList<Friend> ();
+			ui = new GUI();
+			this.add(ui.getOuterPanel());
 		
 		if (uc != null)
 		{
-			try {
-				OutputStreamWriter out = new OutputStreamWriter(uc.getOutputStream());
 				String getList = URLEncoder.encode("getList", "UTF-8") + "=" + URLEncoder.encode("true", "UTF-8");
 				out.write(getList);
 				out.flush();
-				
-				BufferedReader in = new BufferedReader (new InputStreamReader(uc.getInputStream()));
+
 				String lineIn;
 				while ((lineIn=in.readLine()) != null){
 					addFriend(lineIn);
 				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
-			
+		}catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	

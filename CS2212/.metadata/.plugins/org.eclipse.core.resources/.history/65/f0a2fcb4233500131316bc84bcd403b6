@@ -1,0 +1,134 @@
+import javax.swing.JApplet;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map.Entry;
+import java.awt.Component;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+
+public class FriendSearch extends JApplet{
+	
+	private User user;
+	private LinkedList <Friend> friendList;
+	private URL url;
+	private URLConnection uc;
+	private GUI ui;
+	
+	public void init()
+	{
+		final String userName = getParameter ("userName");
+		URL userPicLocation = null;
+		try {
+			userPicLocation = new URL (getParameter("userPicLocation"));
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (userPicLocation != null)
+			user = new User (userName, userPicLocation);
+		else
+			user = new User (userName);
+		
+		friendList = new LinkedList<Friend> ();
+		ui = new GUI();
+		this.add(ui.getOuterPanel());
+		try{
+			url = new URL (getCodeBase() + "/babynamesearch.php");
+			uc = url.openConnection();
+			uc.setDoOutput(true);
+		}catch (Exception e){
+			
+		}
+		
+		if (uc != null)
+		{
+			try {
+				OutputStreamWriter out = new OutputStreamWriter(uc.getOutputStream());
+				String getList = URLEncoder.encode("getList", "UTF-8") + "=" + URLEncoder.encode("true", "UTF-8");
+				out.write(getList);
+				out.flush();
+				
+				BufferedReader in = new BufferedReader (new InputStreamReader(uc.getInputStream()));
+				String lineIn;
+				while ((lineIn=in.readLine()) != null){
+					addFriend(lineIn);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+	}
+	
+	private void addFriend (String toBeParsed)
+	{
+		String[] friend = toBeParsed.split(",");
+		Friend frnd = new Friend (friend[0], Integer.parseInt(friend[1]));
+		friendList.add(frnd);
+	}
+	
+	public String[] getFriendArray()
+	{
+		String[] friendArray = new String [friendList.size()];
+		Iterator <Friend> it = friendList.iterator();
+		for (int i=0; i<friendList.size(); ++i){
+			friendArray[i] = it.next().getName();
+		}
+		
+		return friendArray;
+	}
+	
+	public URL friendSelected (int index) throws IOException
+	{
+		int id = friendList.get(index).getId();
+		String toBeSent = URLEncoder.encode("friendId", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(id) , "UTF-8");
+		if (uc != null)
+		{
+			OutputStreamWriter out = new OutputStreamWriter(uc.getOutputStream());
+			out.write(toBeSent);
+			out.flush();
+			
+			BufferedReader in = new BufferedReader (new InputStreamReader(uc.getInputStream()));
+			
+			while (true)
+			{
+				String lineIn;
+				if ((lineIn = in.readLine()) == null)
+					continue;
+				URL picLocation = new URL (lineIn);
+				friendList.get(index).setPic(picLocation);
+				return picLocation;
+			}
+		}
+		else return null;
+		
+	}
+	
+	public String getFriendName (int index)
+	{
+		return friendList.get(index).getName();
+	}
+	
+	public String getUserName()
+	{
+		return user.getName();
+	}
+	
+	public URL getUserPic()
+	{
+		return user.getPic();
+	}
+
+}
